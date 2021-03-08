@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">GoCaching</string>
+    <string name="add_cache">Add Cache</string>
+    <string name="edit_cache">Edit Cache</string>
+    <string name="cache_textField">Cache:</string>
+    <string name="where_textField">Where:</string>
+    <string name="searched_textField">Searched:</string>
+    <string name="info">Info:</string>
+    <string name="list_cache_text">List Caches</string>
+
+
+    <!-- AddGeoCache fragment  -->
+    <string name="add_button">Add Cache</string>
+
+    <!-- EditGeoCache fragment -->
+    <string name="update_button">Update Cache</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
