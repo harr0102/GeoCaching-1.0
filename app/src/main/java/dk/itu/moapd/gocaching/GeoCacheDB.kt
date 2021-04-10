@@ -47,6 +47,10 @@ class GeoCacheDB private constructor(context: Context) {
     fun getLastGeoCacheInfo(): String {
         return lastCache.toString()
     }
+
+    fun remove(i: Int) {
+        geoCaches.removeAt(i)
+    }
     /*private fun randomDate(): Long {
 // This function gets the current timestamp and
 // generates a random date in the last 365 days .

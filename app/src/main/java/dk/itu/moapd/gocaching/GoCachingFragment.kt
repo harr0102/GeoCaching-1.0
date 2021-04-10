@@ -1,9 +1,11 @@
 package dk.itu.moapd.gocaching
+import android.app.ProgressDialog.show
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_go_caching.*
 import kotlinx.android.synthetic.main.fragment_go_caching.*
 import kotlinx.android.synthetic.main.list_geo_cache.*
 import org.w3c.dom.Text
+import java.io.Console
 
 class GoCachingFragment : Fragment() {
     private var adapter: GeoCacheAdapter? = null
@@ -42,6 +45,8 @@ class GoCachingFragment : Fragment() {
         geo_cache_recycler_view.adapter = adapter
 
     }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -94,6 +99,14 @@ class GoCachingFragment : Fragment() {
                 where.text = geoCache.where
                 date.text = geoCache.date
                 updatedDate.text = geoCache.updatedDate
+
+                itemView.setOnClickListener() {
+                    if (it != null) {
+                        geoCacheDB.remove(position)
+                        adapter?.notifyDataSetChanged()
+                        Toast.makeText(context, "${geoCache.cache} has been removed.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
