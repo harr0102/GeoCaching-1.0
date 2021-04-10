@@ -34,12 +34,10 @@
         android:layout_height="20dp" />
 
     <!-- List of all geoCaches -->
-    <ListView
-        android:id="@+id/geo_cache_list_view"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/geo_cache_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:textSize="12sp" />
-
-
 
 </LinearLayout>
