@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_go_caching.*
 import kotlinx.android.synthetic.main.fragment_go_caching.*
+import kotlinx.android.synthetic.main.list_geo_cache.*
+import org.w3c.dom.Text
 
 class GoCachingFragment : Fragment() {
     private var adapter: GeoCacheAdapter? = null
@@ -91,6 +93,7 @@ class GoCachingFragment : Fragment() {
                 cache.text = geoCache.cache
                 where.text = geoCache.where
                 date.text = geoCache.date
+                updatedDate.text = geoCache.updatedDate
             }
         }
     }
@@ -100,6 +103,7 @@ class GoCachingFragment : Fragment() {
         val cache: TextView = view.findViewById(R.id.cache_text)
         val where: TextView = view.findViewById(R.id.where_text)
         val date: TextView = view.findViewById(R.id.date_text)
+        val updatedDate: TextView = view.findViewById(R.id.updatedDate_text)
     }
 
 

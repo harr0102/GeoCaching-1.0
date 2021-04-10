@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_geo_cache.*
+import java.util.*
 
 class EditGeoCacheFragment : Fragment() {
     companion object {
@@ -35,7 +36,8 @@ class EditGeoCacheFragment : Fragment() {
         submit_button.setText(R.string.update_button)
         submit_button.setOnClickListener {
             if (editTextCache.text.isNotEmpty() && editTextWhere.text.isNotEmpty()) {
-                geoCacheDB.updateGeoCache(editTextCache.text.toString(), editTextWhere.toString())
+                var date = Date()
+                geoCacheDB.updateGeoCache(editTextCache.text.toString(), editTextWhere.text.toString(), date)
                 editTextCache.text.clear()
                 editTextWhere.text.clear()
                 info_text.setText(geoCacheDB.getLastGeoCacheInfo())

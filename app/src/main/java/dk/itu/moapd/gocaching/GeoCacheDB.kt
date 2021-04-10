@@ -13,18 +13,18 @@ class GeoCacheDB private constructor(context: Context) {
 
 
     private val geoCaches = ArrayList<GeoCache>()
-    private var lastCache = GeoCache("", "", null)
+    private var lastCache = GeoCache("", "", null, null)
 
 
     init {
         geoCaches.add(
-                GeoCache("Chair", "ITU", "2021/02/05 14:53:12")
+                GeoCache("Chair", "ITU", "2021/02/05 14:53:12", null)
         )
         geoCaches.add(
-                GeoCache("Bike", "Fields", "2020/12/16 09:15:42")
+                GeoCache("Bike", "Fields", "2020/12/16 09:15:42", null)
         )
         geoCaches.add(
-                GeoCache("Ticket", "Kobenhavns Lufthavn", "2020/11/29 23:00:50")
+                GeoCache("Ticket", "Kobenhavns Lufthavn", "2020/11/29 23:00:50", null)
         )
     }
 
@@ -34,14 +34,15 @@ class GeoCacheDB private constructor(context: Context) {
         return geoCaches
     }
     fun addGeoCache(cache: String, where: String) {
-
-        lastCache = GeoCache(cache, where, dateFormat?.format(date))
+        lastCache = GeoCache(cache, where, dateFormat?.format(date), null)
         geoCaches.add(lastCache)
     }
-    fun updateGeoCache(cache: String, where: String) {
+    fun updateGeoCache(cache: String, where: String, updatedDate: Date) {
         lastCache.cache = cache
         lastCache.where = where
-        lastCache.date = dateFormat?.format(date)
+        //lastCache.date = dateFormat?.format(date)
+        lastCache.updatedDate = dateFormat?.format(updatedDate)
+
     }
     fun getLastGeoCacheInfo(): String {
         return lastCache.toString()
