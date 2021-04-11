@@ -1,4 +1,4 @@
-package dk.itu.moapd.gocaching
+package dk.itu.moapd.gocaching.legacy
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import dk.itu.moapd.gocaching.R
+import dk.itu.moapd.gocaching.model.GeoCache
 
 
 class GeoCacheArrayAdapter(context: Context, geoCaches: List<GeoCache>):

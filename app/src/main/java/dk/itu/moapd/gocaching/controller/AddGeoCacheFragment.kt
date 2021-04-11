@@ -1,13 +1,15 @@
-package dk.itu.moapd.gocaching
+package dk.itu.moapd.gocaching.controller
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dk.itu.moapd.gocaching.GeoCacheDB
+import dk.itu.moapd.gocaching.R
 import kotlinx.android.synthetic.main.fragment_geo_cache.*
-import java.util.*
 
-class EditGeoCacheFragment : Fragment() {
+
+class AddGeoCacheFragment : Fragment() {
     companion object {
         lateinit var geoCacheDB: GeoCacheDB
     }
@@ -33,11 +35,10 @@ class EditGeoCacheFragment : Fragment() {
 
 
 // Buttons
-        submit_button.setText(R.string.update_button)
+        submit_button.setText(R.string.add_cache)
         submit_button.setOnClickListener {
             if (editTextCache.text.isNotEmpty() && editTextWhere.text.isNotEmpty()) {
-                var date = Date()
-                geoCacheDB.updateGeoCache(editTextCache.text.toString(), editTextWhere.text.toString(), date)
+                geoCacheDB.addGeoCache(editTextCache.text.toString(), editTextWhere.text.toString())
                 editTextCache.text.clear()
                 editTextWhere.text.clear()
                 info_text.setText(geoCacheDB.getLastGeoCacheInfo())

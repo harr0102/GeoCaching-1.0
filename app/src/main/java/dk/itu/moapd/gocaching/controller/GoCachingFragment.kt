@@ -1,5 +1,4 @@
-package dk.itu.moapd.gocaching
-import android.app.ProgressDialog.show
+package dk.itu.moapd.gocaching.controller
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dk.itu.moapd.gocaching.GeoCacheDB
+import dk.itu.moapd.gocaching.R
+import dk.itu.moapd.gocaching.model.GeoCache
 import kotlinx.android.synthetic.main.activity_go_caching.*
 import kotlinx.android.synthetic.main.fragment_go_caching.*
-import kotlinx.android.synthetic.main.list_geo_cache.*
-import org.w3c.dom.Text
-import java.io.Console
 
 class GoCachingFragment : Fragment() {
     private var adapter: GeoCacheAdapter? = null

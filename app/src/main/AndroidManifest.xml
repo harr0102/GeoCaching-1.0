@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoCaching">
-        <activity android:name=".GoCachingActivity">
+        <activity android:name=".view.GoCachingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

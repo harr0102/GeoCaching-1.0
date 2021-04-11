@@ -1,9 +1,9 @@
-package dk.itu.moapd.gocaching
+package dk.itu.moapd.gocaching.view
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_go_caching.*
+import dk.itu.moapd.gocaching.controller.GoCachingFragment
+import dk.itu.moapd.gocaching.R
 
 class GoCachingActivity : AppCompatActivity() {
 

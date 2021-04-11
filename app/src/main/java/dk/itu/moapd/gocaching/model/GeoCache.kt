@@ -1,4 +1,4 @@
-package dk.itu.moapd.gocaching
+package dk.itu.moapd.gocaching.model
 
 
 class GeoCache(_cache: String, _where: String, _date: String?, _updatedDate: String?) {

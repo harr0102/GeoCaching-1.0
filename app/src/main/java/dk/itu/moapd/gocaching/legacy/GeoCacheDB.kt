@@ -1,6 +1,7 @@
 package dk.itu.moapd.gocaching
 
 import android.content.Context
+import dk.itu.moapd.gocaching.model.GeoCache
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
