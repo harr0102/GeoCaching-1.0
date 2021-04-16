@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import dk.itu.moapd.gocaching.R
 import dk.itu.moapd.gocaching.model.GeoCache
-import dk.itu.moapd.gocaching.model.GeoCacheVM
 import kotlinx.android.synthetic.main.fragment_geo_cache.*
 import kotlinx.android.synthetic.main.list_geo_cache.*
 import java.text.SimpleDateFormat
