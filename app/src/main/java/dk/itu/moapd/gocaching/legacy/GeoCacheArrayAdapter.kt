@@ -10,7 +10,7 @@ import dk.itu.moapd.gocaching.R
 import dk.itu.moapd.gocaching.model.GeoCache
 
 
-class GeoCacheArrayAdapter(context: Context, geoCaches: List<GeoCache>):
+/*class GeoCacheArrayAdapter(context: Context, geoCaches: List<GeoCache>):
     ArrayAdapter<GeoCache>(context, R.layout.list_geo_cache, geoCaches) {
 
     // Viewholder represent each variable you wanna present in your user interface.
@@ -43,4 +43,4 @@ class GeoCacheArrayAdapter(context: Context, geoCaches: List<GeoCache>):
         view?.tag = viewHolder
         return view!!
     }
-}
+}*/

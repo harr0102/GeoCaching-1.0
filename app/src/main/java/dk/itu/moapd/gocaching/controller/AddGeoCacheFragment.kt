@@ -3,22 +3,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import dk.itu.moapd.gocaching.GeoCacheDB
+import androidx.lifecycle.ViewModelProviders
 import dk.itu.moapd.gocaching.R
+import dk.itu.moapd.gocaching.model.GeoCache
+import dk.itu.moapd.gocaching.model.GeoCacheVM
 import kotlinx.android.synthetic.main.fragment_geo_cache.*
+import kotlinx.android.synthetic.main.list_geo_cache.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AddGeoCacheFragment : Fragment() {
+    var dateFormat: SimpleDateFormat? = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+
     companion object {
-        lateinit var geoCacheDB: GeoCacheDB
+        lateinit var geoCacheVM: GeoCacheVM
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        geoCacheDB = GeoCacheDB.get(requireActivity())
-
+        geoCacheVM = ViewModelProviders.of(this).get(GeoCacheVM::class.java)
     }
 
     override fun onCreateView(
@@ -32,16 +40,16 @@ class AddGeoCacheFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
-
 // Buttons
         submit_button.setText(R.string.add_cache)
         submit_button.setOnClickListener {
             if (editTextCache.text.isNotEmpty() && editTextWhere.text.isNotEmpty()) {
-                geoCacheDB.addGeoCache(editTextCache.text.toString(), editTextWhere.text.toString())
+                geoCacheVM.add(GeoCache(cache = editTextCache.text.toString(), where = editTextWhere.text.toString(), dateCreated = dateFormat?.format(Date()).toString()))
+                Toast.makeText(requireActivity(), "Added cache: ${editTextCache.text}", Toast.LENGTH_SHORT).show()
                 editTextCache.text.clear()
                 editTextWhere.text.clear()
-                info_text.setText(geoCacheDB.getLastGeoCacheInfo())
+                //val manager = requireFragmentManager()
+                //manager.popBackStack()
             }
         }
 

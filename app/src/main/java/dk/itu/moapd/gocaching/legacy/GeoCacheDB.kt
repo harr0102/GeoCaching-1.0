@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class GeoCacheDB private constructor(context: Context) {
+/*class GeoCacheDB private constructor(context: Context) {
 
     // https://mkyong.com/java/java-date-and-calendar-examples/ example 1.3 - I have used the same Date format.
     var dateFormat: SimpleDateFormat? = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
@@ -61,10 +61,10 @@ class GeoCacheDB private constructor(context: Context) {
         val year = random.nextDouble() * 1000 * 60 * 60 * 24 * 365
         return(now - year).toLong()
     }*/
-}
+}*/
 
 
-open class GeoCacheDBHolder<out T : Any, in A>(creator: (A) -> T) {
+/*open class GeoCacheDBHolder<out T : Any, in A>(creator: (A) -> T) {
     private var creator: ((A) -> T)? = creator
 
     @Volatile
@@ -88,3 +88,4 @@ open class GeoCacheDBHolder<out T : Any, in A>(creator: (A) -> T) {
         }
     }
 }
+ */
