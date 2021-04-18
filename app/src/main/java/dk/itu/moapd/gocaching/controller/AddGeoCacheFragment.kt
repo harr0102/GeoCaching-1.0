@@ -5,27 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import dk.itu.moapd.gocaching.R
 import dk.itu.moapd.gocaching.model.GeoCache
+import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_geo_cache.*
-import kotlinx.android.synthetic.main.list_geo_cache.*
 import java.text.SimpleDateFormat
 import java.util.*
+import io.realm.Realm.getDefaultInstance
+
 
 
 class AddGeoCacheFragment : Fragment() {
     var dateFormat: SimpleDateFormat? = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    private lateinit var mRealm: Realm
 
-    companion object {
-        lateinit var geoCacheVM: GeoCacheVM
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        geoCacheVM = ViewModelProviders.of(this).get(GeoCacheVM::class.java)
     }
 
     override fun onCreateView(
@@ -34,6 +30,8 @@ class AddGeoCacheFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_geo_cache, container, false)
+        mRealm = getDefaultInstance()
+
         return view
     }
 
@@ -43,8 +41,24 @@ class AddGeoCacheFragment : Fragment() {
         submit_button.setText(R.string.add_cache)
         submit_button.setOnClickListener {
             if (editTextCache.text.isNotEmpty() && editTextWhere.text.isNotEmpty()) {
-                geoCacheVM.add(GeoCache(cache = editTextCache.text.toString(), where = editTextWhere.text.toString(), dateCreated = dateFormat?.format(Date()).toString()))
-                Toast.makeText(requireActivity(), "Added cache: ${editTextCache.text}", Toast.LENGTH_SHORT).show()
+                val newCache = editTextCache.text.toString()
+                val newWhere = editTextWhere.text.toString()
+                val newDate = dateFormat?.format(Date()).toString()
+
+                mRealm.executeTransactionAsync { realm ->
+                    var id = realm.where(GeoCache::class.java).max("id")
+                    if (id == null) id = 0
+
+                    val geoCache = GeoCache(
+                        id = id.toInt() + 1,
+                        cache = newCache,
+                        where = newWhere,
+                        dateOfCreation = newDate
+                    )
+
+                    realm.insert(geoCache)
+                }
+                Toast.makeText(requireActivity(), "Added cache: ${newCache}", Toast.LENGTH_SHORT).show()
                 editTextCache.text.clear()
                 editTextWhere.text.clear()
                 //val manager = requireFragmentManager()

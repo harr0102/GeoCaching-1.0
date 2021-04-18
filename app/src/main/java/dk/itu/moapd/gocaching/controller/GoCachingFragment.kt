@@ -1,27 +1,28 @@
 package dk.itu.moapd.gocaching.controller
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dk.itu.moapd.gocaching.R
-import dk.itu.moapd.gocaching.database.GeoCacheDB
 import dk.itu.moapd.gocaching.model.GeoCache
+import io.realm.OrderedRealmCollection
+import io.realm.Realm
+import io.realm.RealmRecyclerViewAdapter
+import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_go_caching.*
 import kotlinx.android.synthetic.main.fragment_go_caching.*
 
+private const val TAG = "GoCachingFragment"
 class GoCachingFragment : Fragment() {
-    private lateinit var adapter: GeoCacheAdapter
-    private lateinit var geoCacheVM: GeoCacheVM
 
-    companion object {
-        lateinit var geoCacheDB: GeoCacheDB
-        lateinit var geoCacheRepository: GeoCacheRepository
+    private lateinit var mRealm: Realm
+    private lateinit var adapter: GeoCacheAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -30,108 +31,121 @@ class GoCachingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_go_caching, container, false)
+        mRealm = Realm.getDefaultInstance()
 
-        adapter = GeoCacheAdapter()
-        geoCacheVM = ViewModelProviders.of(this).get(GeoCacheVM::class.java)
-        geoCacheVM.getAll().observe(this, Observer<List<GeoCache>> {
-            adapter.setGeoCaches(it)
-        })
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // List geocaches click event
-        geo_cache_recycler_view.layoutManager = LinearLayoutManager(activity)
-        geo_cache_recycler_view.adapter = adapter
+        val results = mRealm.where(GeoCache::class.java)
+            .sort("id", Sort.ASCENDING).findAll()
+
+        geo_cache_recycler_view.layoutManager = LinearLayoutManager(context)
+        geo_cache_recycler_view.adapter = GeoCacheAdapter(results)
 
     }
 
-
-
-    override fun onStart() {
-        super.onStart()
-
-        add_button.setOnClickListener {
-            val manager = requireFragmentManager()
-            val fragment = AddGeoCacheFragment()
-
-            manager
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(fragment_container?.tag.toString())
-                .commit()
-        }
-
-
-
-        edit_button.setOnClickListener {
-            val manager = requireFragmentManager()
-            val fragment = EditGeoCacheFragment()
-            val currentFragment = manager.findFragmentById((R.id.fragment_container))
-            manager
-                .beginTransaction()
-                .replace(R.id.fragment_container,fragment)
-                .addToBackStack(currentFragment?.tag)
-                .commit()
-        }
-
-        list_cache_button.setOnClickListener {
-            // Create the adapter
-                geo_cache_recycler_view.adapter = adapter
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_go_caching, menu)
     }
 
-    private inner class GeoCacheAdapter() : RecyclerView.Adapter<GeoCacheViewHolder>() {
+    /* override fun onOptionsItemSelected(item: MenuItem): Boolean {
+         if (item.itemId == R.id.action_logout) {
+             user = app.currentUser()
+             user?.logOut()
+             return true
+         }
+         return super.onOptionsItemSelected(item)
+     }*/
 
-        private var geoCaches: List<GeoCache?> = ArrayList()
+
+ override fun onStart() {
+     super.onStart()
+
+     add_button.setOnClickListener {
+         val manager = requireFragmentManager()
+         val fragment = AddGeoCacheFragment()
+
+         manager
+             .beginTransaction()
+             .replace(R.id.fragment_container, fragment)
+             .addToBackStack(fragment_container?.tag.toString())
+             .commit()
+     }
+
+
+
+     edit_button.setOnClickListener {
+         val manager = requireFragmentManager()
+         val fragment = EditGeoCacheFragment()
+         val currentFragment = manager.findFragmentById((R.id.fragment_container))
+         manager
+             .beginTransaction()
+             .replace(R.id.fragment_container,fragment)
+             .addToBackStack(currentFragment?.tag)
+             .commit()
+     }
+
+     list_cache_button.setOnClickListener {
+         // Create the adapter
+         val results = mRealm.where(GeoCache::class.java)
+             .sort("id", Sort.ASCENDING).findAll()
+             geo_cache_recycler_view.adapter = GeoCacheAdapter(results)
+     }
+ }
+
+    private inner class GeoCacheAdapter(data: OrderedRealmCollection<GeoCache>) :
+        RealmRecyclerViewAdapter<GeoCache, GeoCacheAdapter.GeoCacheViewHolder>(data, true) {
+        private var selectedPos = RecyclerView.NO_POSITION
 
         override fun onCreateViewHolder(parent: ViewGroup,
                                         viewType: Int): GeoCacheViewHolder {
-            val layout = layoutInflater
-                    .inflate(R.layout.list_geo_cache, parent, false)
+            val layout = LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_geo_cache, parent, false)
             return GeoCacheViewHolder(layout)
         }
-        override fun getItemCount() = geoCaches.size
 
-        fun setGeoCaches(geoCaches: List<GeoCache?>)  {
-            this.geoCaches = geoCaches
-            notifyDataSetChanged()
-        }
-
-        override fun onBindViewHolder(holder: GeoCacheViewHolder,
-                                      position: Int) {
-            val geoCache = geoCaches[position]
+        override fun onBindViewHolder(holder: GeoCacheViewHolder, position: Int) {
+            val geoCache = getItem(position)
             holder.apply {
-                cache.text = geoCache?.cache
-                where.text = geoCache?.where
-                date.text = geoCache?.dateCreated
-                updatedDate.text = geoCache?.dateEdited
+                cache?.text = geoCache?.cache
+                where?.text = geoCache?.where
+                date?.text = geoCache?.dateOfCreation
+                updatedDate?.text = geoCache?.dateUpdated
+                itemView.isSelected = selectedPos == position
+                itemView.setOnClickListener {
 
-                itemView.setOnClickListener() {
-                    if (it != null) {
+                    if(it != null){ // This is where the delete is performed when clicking on the recyclerview
                         val manager = requireFragmentManager()
                         val fragment = EditGeoCacheFragment()
                         fragment.setGeoCache(geoCache!!)
-                        val currentFragment = manager.findFragmentById(R.id.fragment_container)
+                        val currentFragment = manager.findFragmentById((R.id.fragment_container))
                         manager
                             .beginTransaction()
                             .replace(R.id.fragment_container, fragment)
                             .addToBackStack(currentFragment?.tag)
                             .commit()
                     }
+                    notifyItemChanged(selectedPos)
+                    selectedPos = layoutPosition
+                    notifyItemChanged(selectedPos)
                 }
             }
         }
+        inner class GeoCacheViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val cache: TextView = view.findViewById(R.id.cache_text)
+            val where: TextView = view.findViewById(R.id.where_text)
+            val date: TextView = view.findViewById(R.id.date_text)
+            val updatedDate: TextView = view.findViewById(R.id.updatedDate_text)
+        }
+ }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mRealm.close()
     }
-
-    private inner class GeoCacheViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val cache: TextView = view.findViewById(R.id.cache_text)
-        val where: TextView = view.findViewById(R.id.where_text)
-        val date: TextView = view.findViewById(R.id.date_text)
-        val updatedDate: TextView = view.findViewById(R.id.updatedDate_text)
-    }
-
-
 }
 

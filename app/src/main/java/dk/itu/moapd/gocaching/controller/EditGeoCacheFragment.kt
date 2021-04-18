@@ -3,23 +3,21 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import dk.itu.moapd.gocaching.R
 import dk.itu.moapd.gocaching.model.GeoCache
+import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_geo_cache.*
-import kotlinx.android.synthetic.main.list_geo_cache.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class EditGeoCacheFragment : Fragment() {
 
     private lateinit var currentGeoCache: GeoCache
+    private lateinit var mRealm: Realm
     var dateFormat: SimpleDateFormat? = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
 
 
-    companion object {
-        lateinit var geoCacheVM: GeoCacheVM
-    }
+
 
     fun setGeoCache(geoCache: GeoCache) {
         this.currentGeoCache = geoCache
@@ -27,7 +25,6 @@ class EditGeoCacheFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        geoCacheVM = ViewModelProviders.of(this).get(GeoCacheVM::class.java)
     }
 
     override fun onCreateView(
@@ -37,6 +34,7 @@ class EditGeoCacheFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_geo_cache, container, false)
         setHasOptionsMenu(true)
+        mRealm = Realm.getDefaultInstance()
 
         return view
     }
@@ -49,7 +47,7 @@ class EditGeoCacheFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_cache -> {
-                geoCacheVM.remove(currentGeoCache!!)
+                remove(currentGeoCache)
                 val manager = requireFragmentManager()
                 manager.popBackStack()
                 Toast.makeText(context, "${currentGeoCache.cache} deleted!", Toast.LENGTH_SHORT).show()
@@ -57,6 +55,12 @@ class EditGeoCacheFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
 
+        }
+    }
+
+    fun remove(geoCache: GeoCache) {
+        mRealm.executeTransactionAsync {
+            geoCache?.deleteFromRealm()
         }
     }
 
@@ -77,9 +81,11 @@ class EditGeoCacheFragment : Fragment() {
 
                 currentGeoCache.cache = editedCacheText
                 currentGeoCache.where = editedWhereText
-                currentGeoCache.dateEdited = dateFormat?.format(Date()).toString()
+                currentGeoCache.dateUpdated = dateFormat?.format(Date()).toString()
 
-                geoCacheVM.edit(currentGeoCache)
+                mRealm.executeTransactionAsync { realm ->
+                    realm.copyToRealm(currentGeoCache!!)
+                }
                 Toast.makeText(requireActivity(), "Cache updated to ${currentGeoCache.cache}", Toast.LENGTH_SHORT).show()
                 //val manager = requireFragmentManager()
                 //manager.popBackStack()
