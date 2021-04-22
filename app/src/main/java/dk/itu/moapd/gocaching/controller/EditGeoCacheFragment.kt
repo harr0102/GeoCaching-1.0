@@ -12,7 +12,7 @@ import java.util.*
 
 class EditGeoCacheFragment : Fragment() {
 
-    private lateinit var currentGeoCache: GeoCache
+    private lateinit var selectedGeoCache: GeoCache
     private lateinit var mRealm: Realm
     var dateFormat: SimpleDateFormat? = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
 
@@ -20,7 +20,7 @@ class EditGeoCacheFragment : Fragment() {
 
 
     fun setGeoCache(geoCache: GeoCache) {
-        this.currentGeoCache = geoCache
+        this.selectedGeoCache = geoCache
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,10 +47,10 @@ class EditGeoCacheFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_cache -> {
-                remove(currentGeoCache)
+                remove(selectedGeoCache)
                 val manager = requireFragmentManager()
                 manager.popBackStack()
-                Toast.makeText(context, "${currentGeoCache.cache} deleted!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "${selectedGeoCache.cache} deleted!", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -58,7 +58,7 @@ class EditGeoCacheFragment : Fragment() {
         }
     }
 
-    fun remove(geoCache: GeoCache) {
+    private fun remove(geoCache: GeoCache) {
         mRealm.executeTransactionAsync {
             geoCache?.deleteFromRealm()
         }
@@ -79,14 +79,14 @@ class EditGeoCacheFragment : Fragment() {
                 val editedCacheText = editTextCache.text.toString()
                 val editedWhereText = editTextWhere.text.toString()
 
-                currentGeoCache.cache = editedCacheText
-                currentGeoCache.where = editedWhereText
-                currentGeoCache.dateUpdated = dateFormat?.format(Date()).toString()
+                selectedGeoCache.cache = editedCacheText
+                selectedGeoCache.where = editedWhereText
+                selectedGeoCache.dateUpdated = dateFormat?.format(Date()).toString()
 
                 mRealm.executeTransactionAsync { realm ->
-                    realm.copyToRealm(currentGeoCache!!)
+                    realm.copyToRealm(selectedGeoCache!!)
                 }
-                Toast.makeText(requireActivity(), "Cache updated to ${currentGeoCache.cache}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Cache updated to ${selectedGeoCache.cache}", Toast.LENGTH_SHORT).show()
                 //val manager = requireFragmentManager()
                 //manager.popBackStack()
         }
